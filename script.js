@@ -7,9 +7,8 @@ const cancelFileButton = document.getElementById("file-cancel");
 const chatbotToggler = document.getElementById("chatbot-toggler");
 const closeChatbot = document.getElementById("close-chatbot");
 
-// API configuration loaded from config.js
-const API_KEY = CONFIG.GEMINI_API_KEY;
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${CONFIG.GEMINI_MODEL}:generateContent?key=${API_KEY}`;
+const API_KEY = "AIzaSyCxYzbLrT74sWTCJ9SoVP1KAkNTIvkMgl4";
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
 
 const userData = {
   message: null,
@@ -62,24 +61,43 @@ const generateBotResponse = async (incomingMessageDiv) => {
 
     const response = await fetch(API_URL, requestOptions);
     const data = await response.json();
-    if(!response.ok) throw new Error(data.error.message);
-    
+
+    if (!response.ok) {
+      // Handle specific API errors
+      if (response.status === 429) {
+        throw new Error("Rate limit exceeded. Please wait a moment and try again.");
+      } else if (response.status === 403) {
+        throw new Error("API quota exceeded or invalid API key.");
+      } else if (response.status === 400) {
+        throw new Error("Invalid request. Please try a different message.");
+      } else {
+        throw new Error(data.error?.message || "An error occurred. Please try again.");
+      }
+    }
+
+    // Check if response has valid content
+    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+      throw new Error("No response received. The message may have been filtered.");
+    }
+
     const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim();
     messageElement.innerText = apiResponseText;
 
     chatHistory.push({
       role: "model",
       parts: [
-        { 
-          text: apiResponseText 
+        {
+          text: apiResponseText
         }
       ]
     })
 
   } catch (error) {
-    console.log(error);
+    console.error(error);
     messageElement.innerText = error.message;
     messageElement.style.color = "#ff0000";
+    // Remove the failed user message from history to allow retry
+    chatHistory.pop();
   } finally {
     userData.file = {};
     incomingMessageDiv.classList.remove("thinking");
@@ -89,13 +107,14 @@ const generateBotResponse = async (incomingMessageDiv) => {
 
 const handleOutgoingMessage = (e) => {
   e.preventDefault();
-  userData.message = e.target.value.trim();
+  userData.message = messageInput.value.trim();
+  if (!userData.message && !userData.file.data) return;
   messageInput.value = "";
   fileUploadWrapper.classList.remove("file-uploaded");
   messageInput.dispatchEvent(new Event("input"));
 
   const messageContent = `<div class="message-text"></div>
-  ${userData.file.data ? `<img src="data:${userData.file.mime_type};base64,${userData.file.data}" class="attachement" />` : ""}`;
+  ${userData.file.data ? `<img src="data:${userData.file.mime_type};base64,${userData.file.data}" class="attachment" />` : ""}`;
   
   const outgoingMessageDiv =  createMessageElement(messageContent, "user-message");
   outgoingMessageDiv.querySelector(".message-text").textContent = userData.message;

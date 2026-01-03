@@ -46,6 +46,5 @@ ehthumbs.db
 *.temp
 *.bak
 
-# API Keys (security)
-config.js
+# Secrets
 secrets.js
