@@ -9,6 +9,10 @@
 ![Status](https://img.shields.io/badge/Status-In%20Development-orange)
 ![Academic Project](https://img.shields.io/badge/Type-Academic%20Project-blue)
 
+## Live Demo
+
+**[Try the Chatbot Here](https://ithnoobs.github.io/chatbot/)**
+
 ## Overview
 
 A modern, responsive AI-powered chatbot web application built with vanilla HTML, CSS, and JavaScript. This chatbot integrates with Google's Gemini API to provide intelligent conversational responses.
@@ -30,7 +34,7 @@ View the UI/UX mockup on Figma:
 
 ## Project Structure
 
-```
+```text
 chatbot/
 ├── index.html          # Main HTML structure
 ├── style.css           # Styling and animations
@@ -63,25 +67,18 @@ chatbot/
 ### Installation
 
 1. Clone the repository:
+
    ```bash
-   git clone https://github.com/yourusername/ai-chatbot.git
+   git clone https://github.com/ithnoobs/chatbot.git
    ```
 
 2. Navigate to the project directory:
+
    ```bash
-   cd ai-chatbot
+   cd chatbot
    ```
 
-3. Open `index.html` in your browser or use a local development server:
-   ```bash
-   # Using Python
-   python -m http.server 8000
-
-   # Using Node.js (with http-server)
-   npx http-server
-   ```
-
-4. Access the application at `http://localhost:8000`
+3. Open `index.html` directly in your browser - no server required!
 
 ### Configuration
 
@@ -123,7 +120,7 @@ This is an academic project. Contributions, issues, and feature requests are wel
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-```
+```text
 MIT License
 
 Copyright (c) 2024
