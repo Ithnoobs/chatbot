@@ -5,6 +5,7 @@ bower_components/
 # IDE and Editor
 .idea/
 .vscode/
+.claude/
 *.swp
 *.swo
 *~
